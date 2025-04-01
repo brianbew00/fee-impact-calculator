@@ -118,6 +118,3 @@ for col in df.columns[1:]:
 # Display Table
 st.subheader("📋 Investment Growth Breakdown")
 st.dataframe(df, use_container_width=True)
-
-# Footer
-st.markdown("**Built with ❤️ using Streamlit and Plotly**")
