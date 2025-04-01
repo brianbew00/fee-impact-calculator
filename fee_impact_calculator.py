@@ -23,23 +23,21 @@ index_fees_paid = [0]
 active_fees_paid = [0]
 
 # Compound calculation with fee tracking
-for i in range(1, years + 1):
-    index_net_return = market_return - index_fund_expense
-    active_net_return = market_return - active_fund_expense - aum_fee
+for _ in range(1, years + 1):
+    # Fees based on beginning-of-year balance
+    index_fee_amt = index_values[-1] * index_fund_expense
+    active_fee_amt = active_values[-1] * (active_fund_expense + aum_fee)
 
-    prev_index = index_values[-1]
-    prev_active = active_values[-1]
+    # Accumulate fees
+    index_fees_paid.append(index_fees_paid[-1] + index_fee_amt)
+    active_fees_paid.append(active_fees_paid[-1] + active_fee_amt)
 
-    new_index = prev_index * (1 + index_net_return)
-    new_active = prev_active * (1 + active_net_return)
-
-    index_fee_amt = prev_index * index_fund_expense
-    active_fee_amt = prev_active * (active_fund_expense + aum_fee)
+    # Apply growth after subtracting fee
+    new_index = index_values[-1] * (1 + market_return - index_fund_expense)
+    new_active = active_values[-1] * (1 + market_return - active_fund_expense - aum_fee)
 
     index_values.append(new_index)
     active_values.append(new_active)
-    index_fees_paid.append(index_fees_paid[-1] + index_fee_amt)
-    active_fees_paid.append(active_fees_paid[-1] + active_fee_amt)
 
 # Final values
 final_index = index_values[-1]
@@ -108,16 +106,18 @@ st.markdown("""
 df = pd.DataFrame({
     'Year': years_list,
     'Index Fund (Low Fees)': index_values,
-    'Active Management (High Fees)': active_values,
     'Index Fees Paid': index_fees_paid,
+    'Active Management (High Fees)': active_values,
     'Active Fees Paid': active_fees_paid
 })
 
-# Format table as currency
-df_display = df.copy()
-for col in ['Index Fund (Low Fees)', 'Active Management (High Fees)', 'Index Fees Paid', 'Active Fees Paid']:
-    df_display[col] = df_display[col].map('${:,.2f}'.format)
+# Format as currency
+for col in df.columns[1:]:
+    df[col] = df[col].map('${:,.2f}'.format)
 
 # Display Table
 st.subheader("📋 Investment Growth Breakdown")
-st.dataframe(df_display, use_container_width=True)
+st.dataframe(df, use_container_width=True)
+
+# Footer
+st.markdown("**Built with ❤️ using Streamlit and Plotly**")
