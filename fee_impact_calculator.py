@@ -6,18 +6,6 @@ import plotly.graph_objects as go
 # Custom Title with Smaller Font
 st.markdown("<h2 style='font-size: 28px;'>📊 Fee Impact Calculator: Active vs. Passive Investing</h2>", unsafe_allow_html=True)
 
-# Key Takeaways Positioned Right After Title
-st.markdown("""
-<div style='margin-bottom: 30px;'>
-<h4>💡 Key Takeaways:</h4>
-<ul>
-  <li><strong>Low-cost index funds</strong> grow significantly more over time due to reduced fees.</li>
-  <li><strong>Actively managed funds</strong> with AUM fees erode long-term wealth.</li>
-  <li><strong>Even a small difference in fees</strong> can lead to hundreds of thousands lost over decades.</li>
-</ul>
-</div>
-""", unsafe_allow_html=True)
-
 # Sidebar Inputs
 st.sidebar.header("Investment Inputs")
 
@@ -71,7 +59,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# Fee Impact Summary
+# Fee Impact Summary (moved up)
 final_index = index_values[-1]
 final_active = active_values[-1]
 dollar_difference = final_index - final_active
@@ -84,6 +72,18 @@ st.markdown(f"""
 - **Cumulative Dollar Difference:** `${dollar_difference:,.2f}`  
 - **Percentage Reduction in Future Value Due to Fees:** `{percent_difference:.2f}%`
 """)
+
+# Key Takeaways (moved down)
+st.markdown("""
+<div style='margin-top: 30px;'>
+<h4>💡 Key Takeaways:</h4>
+<ul>
+  <li><strong>Low-cost index funds</strong> grow significantly more over time due to reduced fees.</li>
+  <li><strong>Actively managed funds</strong> with AUM fees erode long-term wealth.</li>
+  <li><strong>Even a small difference in fees</strong> can lead to hundreds of thousands lost over decades.</li>
+</ul>
+</div>
+""", unsafe_allow_html=True)
 
 # Format currency columns for table display
 df_display = df.copy()
