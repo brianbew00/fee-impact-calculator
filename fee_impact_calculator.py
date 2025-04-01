@@ -3,12 +3,11 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-# Custom Title with Smaller Font
-st.markdown("<h2 style='font-size: 28px;'>📊 Fee Impact Calculator: Active vs. Passive Investing</h2>", unsafe_allow_html=True)
+# Move the main title to the sidebar
+st.sidebar.markdown("<h2 style='font-size: 20px;'>📊 Fee Impact Calculator:<br>Active vs. Passive Investing</h2>", unsafe_allow_html=True)
 
 # Sidebar Inputs
-st.sidebar.header("Investment Inputs")
-
+st.sidebar.header("Customize Your Scenario")
 initial_investment = st.sidebar.number_input("Initial Investment ($)", min_value=1000, value=100000, step=1000)
 market_return = st.sidebar.slider("Expected Market Return (%)", 0.0, 15.0, 8.0, 0.1) / 100
 index_fund_expense = st.sidebar.slider("Index Fund Expense Ratio (%)", 0.0, 1.0, 0.03, 0.01) / 100
@@ -35,7 +34,7 @@ df = pd.DataFrame({
     'Active Management (High Fees)': active_values
 })
 
-# Fee Impact Summary (moved above chart)
+# Fee Impact Summary
 final_index = index_values[-1]
 final_active = active_values[-1]
 dollar_difference = final_index - final_active
@@ -73,7 +72,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# Key Takeaways (after the chart)
+# Key Takeaways
 st.markdown("""
 <div style='margin-top: 30px;'>
 <h4>💡 Key Takeaways:</h4>
