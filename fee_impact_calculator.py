@@ -35,7 +35,21 @@ df = pd.DataFrame({
     'Active Management (High Fees)': active_values
 })
 
-# Plotly Interactive Chart
+# Fee Impact Summary (moved above chart)
+final_index = index_values[-1]
+final_active = active_values[-1]
+dollar_difference = final_index - final_active
+percent_difference = (dollar_difference / final_index) * 100
+
+st.markdown("### 💰 Fee Impact Summary")
+st.markdown(f"""
+- **Final Value with Index Fund:** `${final_index:,.2f}`  
+- **Final Value with Active Management:** `${final_active:,.2f}`  
+- **Cumulative Dollar Difference:** `${dollar_difference:,.2f}`  
+- **Percentage Reduction in Future Value Due to Fees:** `{percent_difference:.2f}%`
+""")
+
+# Chart Section
 st.subheader("📈 Growth Over Time")
 
 fig = go.Figure()
@@ -59,21 +73,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# Fee Impact Summary (moved up)
-final_index = index_values[-1]
-final_active = active_values[-1]
-dollar_difference = final_index - final_active
-percent_difference = (dollar_difference / final_index) * 100
-
-st.markdown("### 💰 Fee Impact Summary")
-st.markdown(f"""
-- **Final Value with Index Fund:** `${final_index:,.2f}`  
-- **Final Value with Active Management:** `${final_active:,.2f}`  
-- **Cumulative Dollar Difference:** `${dollar_difference:,.2f}`  
-- **Percentage Reduction in Future Value Due to Fees:** `{percent_difference:.2f}%`
-""")
-
-# Key Takeaways (moved down)
+# Key Takeaways (after the chart)
 st.markdown("""
 <div style='margin-top: 30px;'>
 <h4>💡 Key Takeaways:</h4>
@@ -93,3 +93,4 @@ df_display['Active Management (High Fees)'] = df_display['Active Management (Hig
 # Table: Investment Growth Breakdown
 st.subheader("📋 Investment Growth Breakdown")
 st.dataframe(df_display, use_container_width=True)
+
