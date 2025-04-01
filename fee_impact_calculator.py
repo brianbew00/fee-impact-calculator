@@ -22,11 +22,9 @@ index_values = [initial_investment]
 active_values = [initial_investment]
 
 for i in range(1, years + 1):
-    # Net returns
     index_net_return = market_return - index_fund_expense
     active_net_return = market_return - active_fund_expense - aum_fee
 
-    # Compound Growth
     index_values.append(index_values[-1] * (1 + index_net_return))
     active_values.append(active_values[-1] * (1 + active_net_return))
 
@@ -37,11 +35,12 @@ df = pd.DataFrame({
     'Active Management (High Fees)': active_values
 })
 
-# Display DataFrame
-st.subheader("📋 Investment Growth Breakdown")
-st.dataframe(df)
+# Format currency columns
+df_display = df.copy()
+df_display['Index Fund (Low Fees)'] = df_display['Index Fund (Low Fees)'].map('${:,.2f}'.format)
+df_display['Active Management (High Fees)'] = df_display['Active Management (High Fees)'].map('${:,.2f}'.format)
 
-# Plot the results
+# Chart: Investment Growth
 st.subheader("📈 Growth Over Time")
 
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -54,15 +53,16 @@ ax.set_title("Impact of Fees on Investment Growth")
 ax.legend()
 ax.grid(True)
 
-# Show the plot in Streamlit
 st.pyplot(fig)
 
+# Table: Investment Growth Breakdown
+st.subheader("📋 Investment Growth Breakdown")
+st.dataframe(df_display, use_container_width=True)
+
+# Takeaways
 st.markdown("""
 ### 💡 Key Takeaways:
 - **Low-cost index funds grow significantly more over time due to reduced fees.**
 - **Actively managed funds with AUM fees erode long-term wealth.**
 - **Even a small difference in fees can lead to hundreds of thousands lost over decades.**
 """)
-
-# Footer
-st.markdown("**Built with ❤️ using Streamlit**")
