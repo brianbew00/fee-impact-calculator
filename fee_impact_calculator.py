@@ -15,14 +15,14 @@ active_fund_expense = st.sidebar.slider("Active Fund Expense Ratio (%)", 0.0, 2.
 aum_fee = st.sidebar.slider("Advisor AUM Fee (%)", 0.0, 2.0, 1.5, 0.1) / 100
 years = st.sidebar.slider("Investment Duration (Years)", 1, 50, 30)
 
-# Initialize lists
+# Initialize values
 years_list = np.arange(0, years + 1)
 index_values = [initial_investment]
 active_values = [initial_investment]
 index_fees_paid = [0]
 active_fees_paid = [0]
 
-# Compound growth and fee tracking
+# Compound calculation with fee tracking
 for i in range(1, years + 1):
     index_net_return = market_return - index_fund_expense
     active_net_return = market_return - active_fund_expense - aum_fee
@@ -62,10 +62,15 @@ summary_df = pd.DataFrame(summary_data)
 st.markdown("### 💰 Fee Impact Summary")
 st.table(summary_df.set_index("Metric"))
 
-# Display Percent Reduction
-st.markdown(f"**Percentage Reduction in Future Value Due to Fees:** `{percent_difference:.2f}%`")
+# Display Highlighted % Reduction
+st.markdown(f"""
+<div style='font-size: 20px; margin-top: 10px;'>
+<strong>Reduction in Portfolio Due to Fees:</strong>
+<span style='color: red; font-weight: bold;'>{percent_difference:.2f}%</span>
+</div>
+""", unsafe_allow_html=True)
 
-# Chart Section
+# Plot: Growth Over Time
 st.subheader("📈 Growth Over Time")
 
 fig = go.Figure()
@@ -94,12 +99,12 @@ st.markdown("""
 <ul>
   <li><strong>Low-cost index funds</strong> grow significantly more over time due to reduced fees.</li>
   <li><strong>Actively managed funds</strong> with AUM fees erode long-term wealth.</li>
-  <li><strong>Most of the underperformance is due to fees, not skill or strategy.</strong></li>
+  <li><strong>Most of the underperformance is due to fees, not strategy or market conditions.</strong></li>
 </ul>
 </div>
 """, unsafe_allow_html=True)
 
-# Table Data Preparation
+# Data Table
 df = pd.DataFrame({
     'Year': years_list,
     'Index Fund (Low Fees)': index_values,
@@ -108,12 +113,11 @@ df = pd.DataFrame({
     'Active Fees Paid': active_fees_paid
 })
 
+# Format table as currency
 df_display = df.copy()
-df_display['Index Fund (Low Fees)'] = df_display['Index Fund (Low Fees)'].map('${:,.2f}'.format)
-df_display['Active Management (High Fees)'] = df_display['Active Management (High Fees)'].map('${:,.2f}'.format)
-df_display['Index Fees Paid'] = df_display['Index Fees Paid'].map('${:,.2f}'.format)
-df_display['Active Fees Paid'] = df_display['Active Fees Paid'].map('${:,.2f}'.format)
+for col in ['Index Fund (Low Fees)', 'Active Management (High Fees)', 'Index Fees Paid', 'Active Fees Paid']:
+    df_display[col] = df_display[col].map('${:,.2f}'.format)
 
-# Display Breakdown Table
+# Display Table
 st.subheader("📋 Investment Growth Breakdown")
 st.dataframe(df_display, use_container_width=True)
