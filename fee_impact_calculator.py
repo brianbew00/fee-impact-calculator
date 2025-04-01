@@ -37,4 +37,36 @@ for i in range(1, years + 1):
     index_net_return = market_return - index_fund_expense
     active_net_return = market_return - active_fund_expense - aum_fee
 
-    index_values.append(index_values[-
+    index_values.append(index_values[-1] * (1 + index_net_return))
+    active_values.append(active_values[-1] * (1 + active_net_return))
+
+# Create DataFrame
+df = pd.DataFrame({
+    'Year': years_list,
+    'Index Fund (Low Fees)': index_values,
+    'Active Management (High Fees)': active_values
+})
+
+# Format currency columns
+df_display = df.copy()
+df_display['Index Fund (Low Fees)'] = df_display['Index Fund (Low Fees)'].map('${:,.2f}'.format)
+df_display['Active Management (High Fees)'] = df_display['Active Management (High Fees)'].map('${:,.2f}'.format)
+
+# Chart: Investment Growth
+st.subheader("📈 Growth Over Time")
+
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.plot(df['Year'], df['Index Fund (Low Fees)'], label='Index Fund (Low Fees)', linestyle='-', linewidth=2)
+ax.plot(df['Year'], df['Active Management (High Fees)'], label='Active Management (High Fees)', linestyle='--', linewidth=2, color='red')
+
+ax.set_xlabel("Years")
+ax.set_ylabel("Portfolio Value ($)")
+ax.set_title("Impact of Fees on Investment Growth")
+ax.legend()
+ax.grid(True)
+
+st.pyplot(fig)
+
+# Table: Investment Growth Breakdown
+st.subheader("📋 Investment Growth Breakdown")
+st.dataframe(df_display, use_container_width=True)
